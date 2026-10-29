@@ -1,0 +1,263 @@
+################################################################################
+#                      SET 1 – RETAIL ORDER DESK                               #
+#      Enterprise High-Performance Order Processing & Algorithm Suite          #
+################################################################################
+
+>>> STEP 0: INITIALIZING DATASET (50,000 ORDERS)
+[Data] Found existing orders CSV at: data/orders.csv (2176 KB)
+[Data] Successfully loaded 50,000 orders into active memory.
+
+================================================================================
+   TASK 1: RETRIEVAL BENCHMARK - LINEAR SEARCH VS BINARY SEARCH (50,000 RECORDS)
+================================================================================
+Total orders loaded: 50,000 records
+
++-----------------------------------------+----------------------+----------------------+------------+
+| Test Scenario                           | Linear Search        | Binary Search        | Speedup    |
+|                                         | Time (ns) | Comp.    | Time (ns) | Comp.    | Factor     |
++-----------------------------------------+-----------+----------+-----------+----------+------------+
+| First Element (Linear Best Case)        |      108  |       1  |      172  |      15  |      0.6x  |
+| Middle Element (Linear Average Case)    |   474768  |   25001  |    10564  |      15  |     44.9x  |
+| Last Element (Linear Worst Case Found)  |   910402  |   50000  |    11384  |      16  |     80.0x  |
+| Non-existent Element (Worst Case Miss)  |   691522  |   50000  |     1448  |      16  |    477.6x  |
++-----------------------------------------+-----------+----------+-----------+----------+------------+
+
+--- Batch Test: 1,000 Random Order ID Queries ---
+Total Time for 1,000 queries:
+  - Linear Search :    119.129 ms (Avg Comparisons: 24,339 per query)
+  - Binary Search :      1.425 ms (Avg Comparisons: 14 per query)
+  - Overall Speedup: 83.6x faster
+
+--- Analysis & Explanation of Observed Differences ---
+1. Complexity Difference: Linear Search has O(n) complexity. With n = 50,000 records,
+   it requires on average n/2 = 25,000 comparisons and 50,000 comparisons in the worst case.
+2. Logarithmic Scalability: Binary Search has O(log2 n) complexity. For n = 50,000,
+   ceil(log2(50,000)) = 16 comparisons maximum. It eliminates half of the remaining space
+   at every step, resulting in a dramatic orders-of-magnitude performance improvement.
+3. Hardware & Memory: Sequential memory traversal in linear search experiences cache line
+   benefits but is completely overshadowed by 25,000 pointer dereferences versus only ~15 for binary search.
+4. Precondition: Binary search requires sorted data (O(n log n) one-time cost). In a high-read
+   support desk scenario where orders are queried tens of thousands of times, pre-sorting or indexing
+   by Order ID pays for itself almost immediately.
+
+================================================================================
+   TASK 2: SORTING BENCHMARK - O(n^2) VS O(n log n) VS BUILT-IN (10,000 RECORDS)
+================================================================================
+Extracting first 10,000 records for sorting comparison...
+
+--------------------------------------------------------------------------------
+  TRACE OF FIRST 3 PASSES (Bubble Sort - Descending Order by Order Amount)
+--------------------------------------------------------------------------------
+Initial Order Amounts Array: [ $150.00 $890.50 $45.00 $520.00 $310.00 $750.00 ]
+Goal: Rank descending (highest amount to lowest amount)
+
+=== PASS 1 ===
+  Step 1.1: Compare arr[0]=150.00 and arr[1]=890.50 -> SWAP (since 150.0 < 890.5)
+  Step 1.2: Compare arr[1]=150.00 and arr[2]=45.00 -> NO SWAP (already in descending order)
+  Step 1.3: Compare arr[2]=45.00 and arr[3]=520.00 -> SWAP (since 45.0 < 520.0)
+  Step 1.4: Compare arr[3]=45.00 and arr[4]=310.00 -> SWAP (since 45.0 < 310.0)
+  Step 1.5: Compare arr[4]=45.00 and arr[5]=750.00 -> SWAP (since 45.0 < 750.0)
+  Summary of Pass 1: Comparisons = 5, Swaps = 4
+  Array after Pass 1: [ 890.50 150.00 520.00 310.00 750.00 *45.00* ]  (*indicates sorted tail element)
+
+=== PASS 2 ===
+  Step 2.1: Compare arr[0]=890.50 and arr[1]=150.00 -> NO SWAP (already in descending order)
+  Step 2.2: Compare arr[1]=150.00 and arr[2]=520.00 -> SWAP (since 150.0 < 520.0)
+  Step 2.3: Compare arr[2]=150.00 and arr[3]=310.00 -> SWAP (since 150.0 < 310.0)
+  Step 2.4: Compare arr[3]=150.00 and arr[4]=750.00 -> SWAP (since 150.0 < 750.0)
+  Summary of Pass 2: Comparisons = 4, Swaps = 3
+  Array after Pass 2: [ 890.50 520.00 310.00 750.00 *150.00* *45.00* ]  (*indicates sorted tail element)
+
+=== PASS 3 ===
+  Step 3.1: Compare arr[0]=890.50 and arr[1]=520.00 -> NO SWAP (already in descending order)
+  Step 3.2: Compare arr[1]=520.00 and arr[2]=310.00 -> NO SWAP (already in descending order)
+  Step 3.3: Compare arr[2]=310.00 and arr[3]=750.00 -> SWAP (since 310.0 < 750.0)
+  Summary of Pass 3: Comparisons = 3, Swaps = 1
+  Array after Pass 3: [ 890.50 520.00 750.00 *310.00* *150.00* *45.00* ]  (*indicates sorted tail element)
+
+Observation after 3 passes:
+  - The 3 smallest amounts (45.00, 150.00, 310.00) have settled into their final positions at the tail.
+  - The unsorted prefix shrinks by 1 after every pass.
+--------------------------------------------------------------------------------
+Benchmarking 3 Sorting Algorithms on 10,000 records:
+--------------------------------------------------------------------------------
+Running Bubble Sort [O(n^2)] ... Done in 245 ms
+Running Merge Sort [O(n log n)] ... Done in 9 ms
+Running Built-in Arrays.sort() [TimSort / O(n log n)] ... Done in 19 ms
+
++--------------------------------+--------------------+-------------------+---------------+
+| Algorithm                      | Time Complexity    | Execution Time    | Speedup vs    |
+|                                | (Best / Avg / Worst| (10,000 records)  | Bubble Sort   |
++--------------------------------+--------------------+-------------------+---------------+
+| Bubble Sort                    | O(n) / O(n^2)/O(n^2)|      245 ms        |        1.0x   |
+| Merge Sort (Custom)            | O(n log n) always  |        9 ms        |       27.2x   |
+| Built-in Arrays.sort (TimSort) | O(n) / O(n log n)  |       19 ms        |       12.9x   |
++--------------------------------+--------------------+-------------------+---------------+
+Verification: All algorithms produced identical sorted order? -> YES (VERIFIED)
+
+Top 5 Ranked Orders by Amount (Warehouse Dispatch Priority):
+  Rank 1: Order[ID=102227, Cust=CUST-6554, Amt=$2499.68, Time=2026-10-30T07:44:28]
+  Rank 2: Order[ID=100783, Cust=CUST-3381, Amt=$2499.42, Time=2026-10-29T23:38:58]
+  Rank 3: Order[ID=104388, Cust=CUST-5341, Amt=$2499.40, Time=2026-10-29T21:39:28]
+  Rank 4: Order[ID=105411, Cust=CUST-5930, Amt=$2499.39, Time=2026-10-30T00:08:24]
+  Rank 5: Order[ID=107958, Cust=CUST-8734, Amt=$2499.01, Time=2026-10-30T07:26:58]
+
+================================================================================
+   TASK 3: DUPLICATE ORDER DETECTION (HASH-BASED STRUCTURE)
+================================================================================
+Scanning 50,000 orders for duplicate submissions (same customerId & amount within same minute)...
+
++-------------------------------------------------------------------------------+
+| Total Orders Scanned      : 50,000 records                                      |
+| Duplicate Clusters Found  : 5                                                 |
+| Total Duplicate Orders    : 10                                                |
+| Detection Execution Time  : 296                                            ms |
++-------------------------------------------------------------------------------+
+
+Detailed List of Flagged Duplicate Orders (Finance Action Required):
+  Cluster #1 [Key: CUST-8963|378.04|2026-10-29T22:11]:
+    -> Order[ID=100500, Cust=CUST-8963, Amt=$378.04, Time=2026-10-29T22:11:03] (Timestamp: 2026-10-29T22:11:03)
+    -> Order[ID=100505, Cust=CUST-8963, Amt=$378.04, Time=2026-10-29T22:11:21] (Timestamp: 2026-10-29T22:11:21)
+  Cluster #2 [Key: CUST-3355|1364.55|2026-10-30T07:08]:
+    -> Order[ID=101200, Cust=CUST-3355, Amt=$1364.55, Time=2026-10-30T07:08:33] (Timestamp: 2026-10-30T07:08:33)
+    -> Order[ID=101205, Cust=CUST-3355, Amt=$1364.55, Time=2026-10-30T07:08:51] (Timestamp: 2026-10-30T07:08:51)
+  Cluster #3 [Key: CUST-1659|408.11|2026-10-29T23:41]:
+    -> Order[ID=107500, Cust=CUST-1659, Amt=$408.11, Time=2026-10-29T23:41:10] (Timestamp: 2026-10-29T23:41:10)
+    -> Order[ID=107506, Cust=CUST-1659, Amt=$408.11, Time=2026-10-29T23:41:28] (Timestamp: 2026-10-29T23:41:28)
+  Cluster #4 [Key: CUST-4532|1101.66|2026-10-29T17:27]:
+    -> Order[ID=118000, Cust=CUST-4532, Amt=$1101.66, Time=2026-10-29T17:27:15] (Timestamp: 2026-10-29T17:27:15)
+    -> Order[ID=118008, Cust=CUST-4532, Amt=$1101.66, Time=2026-10-29T17:27:33] (Timestamp: 2026-10-29T17:27:33)
+  Cluster #5 [Key: CUST-8992|1643.12|2026-10-29T23:31]:
+    -> Order[ID=148000, Cust=CUST-8992, Amt=$1643.12, Time=2026-10-29T23:31:17] (Timestamp: 2026-10-29T23:31:17)
+    -> Order[ID=148003, Cust=CUST-8992, Amt=$1643.12, Time=2026-10-29T23:31:35] (Timestamp: 2026-10-29T23:31:35)
+
+--- Complexity & Data Structure Rationale ---
+1. Time Complexity: O(n) average.
+   - Each order is visited exactly once.
+   - Hashing the composite key (Customer ID + 2-decimal Amount + Minute bucket)
+     and inserting into the HashMap takes O(1) amortized time.
+   - Contrast with Naive Nested Loop Comparison: O(n^2). For 50,000 records,
+     naive requires n*(n-1)/2 = 1,249,975,000 comparisons (several minutes).
+     The hash-based structure completes in just ~296 ms!
+2. Space Complexity: O(n).
+   - HashMap holds at most n entries, consuming O(n) auxiliary memory.
+   - In an enterprise retail system with 50,000 orders/day, ~50,000 map references
+     occupy less than 5 MB of RAM, representing an outstanding trade-off for real-time speed.
+
+================================================================================
+   TASK 4: CUSTOM STACK (UNDO EDITS) & QUEUE (DISPATCH) VS BUILT-IN EQUIVALENTS
+================================================================================
+--- Part 1: Order Edit History & Undo Mechanism (LIFO) ---
+Initial Order State : Order[ID=100101, Cust=CUST-4421, Amt=$500.00, Time=2026-10-29T21:55:26.7080178]
+
+[Customer Support Edits]
+  1. Applied Discount  -> New Amount: $450.00 | Stack size: 1
+  2. Price Match Promo -> New Amount: $420.00 | Stack size: 2
+  3. Accidental Edit   -> New Amount: $350.00 | Stack size: 3
+
+Current Order State before Undo: $350.00
+
+[Undo Operations using CustomStack]
+  <- UNDO: Reverted (Agent entered wrong manual adjustment). Order restored to $420.00 (Remaining history: 2)
+  <- UNDO: Reverted (Applied price match promo). Order restored to $450.00 (Remaining history: 1)
+  <- UNDO: Reverted (Applied $50 loyalty discount). Order restored to $500.00 (Remaining history: 0)
+Final Order State after full Undo: Order[ID=100101, Cust=CUST-4421, Amt=$500.00, Time=2026-10-29T21:55:26.7080178]
+
+[Built-in Replacement: java.util.ArrayDeque as Stack]
+  Built-in Stack pushed 2 edits. Top edit to undo: OrderEdit[ID=100101: $450.00 -> $400.00 | Reason: 'Promo']
+  Successfully popped with built-in: OrderEdit[ID=100101: $450.00 -> $400.00 | Reason: 'Promo']
+
+-------------------------------------------------------------------------
+--- Part 2: Warehouse Dispatch Line Queue (FIFO) ---
+-------------------------------------------------------------------------
+Enqueuing 5 incoming orders into warehouse dispatch line:
+  [+] Enqueued Order #1 (ID: 100001, Amt: $146.12)
+  [+] Enqueued Order #2 (ID: 100002, Amt: $2355.76)
+  [+] Enqueued Order #3 (ID: 100003, Amt: $237.40)
+  [+] Enqueued Order #4 (ID: 100004, Amt: $960.29)
+  [+] Enqueued Order #5 (ID: 100005, Amt: $1907.60)
+
+Dispatching orders from front of CustomQueue (FIFO order):
+  [-] Dispatched -> Order ID: 100001 | Amount: $146.12 | Remainder in line: 4
+  [-] Dispatched -> Order ID: 100002 | Amount: $2355.76 | Remainder in line: 3
+  [-] Dispatched -> Order ID: 100003 | Amount: $237.40 | Remainder in line: 2
+  [-] Dispatched -> Order ID: 100004 | Amount: $960.29 | Remainder in line: 1
+  [-] Dispatched -> Order ID: 100005 | Amount: $1907.60 | Remainder in line: 0
+
+[Built-in Replacement: java.util.Queue<Order> via ArrayDeque]
+  Built-in Queue front order: Order[ID=100001, Cust=CUST-8130, Amt=$146.12, Time=2026-10-29T20:54:44]
+  Dispatched via poll(): Order[ID=100001, Cust=CUST-8130, Amt=$146.12, Time=2026-10-29T20:54:44]
+
+-------------------------------------------------------------------------
+--- Part 3: Empirical Benchmark (100,000 Operations Each) ---
+-------------------------------------------------------------------------
++---------------------------------------+---------------------+-------------------+
+| Data Structure / Implementation       | Time (100k ops)     | Relative Speed    |
++---------------------------------------+---------------------+-------------------+
+| CustomStack (Dynamic Array)           |      20.46 ms       | Baseline          |
+| Built-in ArrayDeque (as Stack)        |      43.60 ms       |  0.47x faster     |
+| Legacy java.util.Stack (Synchronized) |      55.75 ms       |  2.72x slower     |
+| CustomQueue (Circular Array)          |      31.49 ms       | Baseline          |
+| Built-in ArrayDeque (as Queue)        |      62.55 ms       |  0.50x faster     |
+| Built-in LinkedList (as Queue)        |      27.91 ms       |  0.89x slower     |
++---------------------------------------+---------------------+-------------------+
+
+--- Architectural Comparison & Takeaways ---
+1. Stack Implementation:
+   - CustomStack uses dynamic array resizing with geometric growth, giving O(1) amortized push/pop.
+   - Java's legacy `java.util.Stack` inherits from `Vector` where every method is synchronized.
+     This synchronization adds unnecessary lock contention and performance overhead in single-threaded tasks.
+   - `ArrayDeque` is the recommended modern replacement for Stack in Java, delivering peak cache locality.
+2. Queue Implementation:
+   - CustomQueue uses circular modular arithmetic ((tail+1)%length), avoiding O(n) array shift costs.
+   - Built-in `ArrayDeque` uses bitwise mask circular buffering (power-of-two capacity), which is ultra-fast.
+   - Built-in `LinkedList` allocates a new Node object per enqueue, leading to heavy GC pressure & pointer indirection.
+
+================================================================================
+   TASK 5: REFUND COIN/NOTE MINIMIZATION (GREEDY VS DYNAMIC PROGRAMMING)
+================================================================================
+--- Scenario A: Standard Currency System (Greedy Works Optimally) ---
+Refund Amount: $3887
+Available Denominations: [2000, 500, 200, 100, 50, 20, 10, 5, 2, 1]
+  Greedy Result : Total: 11 coins/notes [1x$2000 3x$500 1x$200 1x$100 1x$50 1x$20 1x$10 1x$5 1x$2 ]
+  DP Result     : Total: 11 coins/notes [1x$2000 3x$500 1x$200 1x$100 1x$50 1x$20 1x$10 1x$5 1x$2 ]
+  Conclusion    : In standard currency, Greedy achieves the provable global optimum.
+
+--- Scenario B: Non-Canonical Denominations (WHERE GREEDY FAILS) ---
+Denomination Set: [1, 3, 4]
+Target Refund Amount: $6
+
+1. Greedy Step-by-Step Execution:
+   - Remaining amount: $6. Largest coin <= 6 is 4. Pick 1x $4. Remaining: $2.
+   - Remaining amount: $2. Largest coin <= 2 is 1. Pick 1x $1. Remaining: $1.
+   - Remaining amount: $1. Largest coin <= 1 is 1. Pick 1x $1. Remaining: $0.
+   => GREEDY RESULT: 3 coins [4, 1, 1]
+
+2. Dynamic Programming Optimal Execution:
+   - DP explores subproblems: dp[6] = 1 + dp[6 - 3] = 1 + dp[3] = 1 + 1 = 2 coins ($3 + $3).
+   => DP OPTIMAL RESULT: 2 coins [3, 3]
+
++---------------------+-------------------+---------------------+---------------+
+| Algorithm           | Coins Used        | Total Coins Count   | Optimality    |
++---------------------+-------------------+---------------------+---------------+
+| Greedy Approach     | [4, 1, 1]         | 3                   | SUB-OPTIMAL   |
+| Dynamic Programming | [3, 3]            | 2                   | OPTIMAL       |
++---------------------+-------------------+---------------------+---------------+
+
+Additional Counterexample: Denominations [1, 5, 6, 9], Amount = $11:
+  Greedy picks: [9, 1, 1] (Total: 3 coins) [Picks 9, then 1, 1]
+  DP picks    : [5, 6] (Total: 2 coins) [Picks 6 and 5]
+
+--- Complexity & Algorithmic Rationale ---
+1. Greedy Algorithm: Time O(k), Space O(1).
+   - Extremely fast and memory-efficient.
+   - Only optimal when the denomination system is 'canonical' (satisfies matroid greedy-choice property).
+2. Dynamic Programming: Time O(amount * k), Space O(amount).
+   - Evaluates overlapping subproblems via optimal substructure.
+   - Guaranteed to find the true global minimum for ANY arbitrary set of currency denominations.
+
+================================================================================
+   ALL 5 TASKS COMPLETED SUCCESSFULLY!
+   Console output mirrored to: console_output.txt
+   One-page complexity & rationale note saved to: COMPLEXITY_AND_RATIONALE.md
+================================================================================

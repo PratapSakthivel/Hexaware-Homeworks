@@ -1,5 +1,6 @@
 # Target compiled files
 target/
+bin/
 *.class
 
 # IntelliJ IDEA
