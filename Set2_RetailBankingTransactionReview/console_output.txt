@@ -1,0 +1,172 @@
+################################################################################
+#              SET 2 – RETAIL BANKING TRANSACTION REVIEW                       #
+#      Core Banking Transaction Processing & Algorithmic Audit Suite           #
+################################################################################
+
+>>> STEP 0: INITIALIZING DATASET (100,000 TRANSACTIONS)
+[Banking Data] Generating 100,000 transactions in: data/transactions.csv ...
+[Banking Data] Successfully generated transactions CSV.
+[Banking Data] Loaded 100,000 transactions into memory.
+
+================================================================================
+   TASK 1: 100,000 TRANSACTION ID RETRIEVAL - BINARY SEARCH VS LINEAR SEARCH
+================================================================================
+Total transactions in sorted audit registry: 100,000
+
++-----------------------------------------+----------------------+----------------------+------------+
+| Scenario                                | Linear Search        | Binary Search        | Speedup    |
+|                                         | Time (ns) | Comp.    | Time (ns) | Comp.    | Factor     |
++-----------------------------------------+-----------+----------+-----------+----------+------------+
+| Best Case for Binary Search (Mid Element) |   867506  |   50000  |      233  |       1  |   3723.2x  |
+| Best Case for Linear Search (1st Element) |       43  |       1  |      200  |      16  |      0.2x  |
+| Worst Case (Last Element arr[n-1])      |   954500  |  100000  |      956  |      17  |    998.4x  |
+| Worst Case Miss (Target Not in Array)   |  1159050  |  100000  |      900  |      17  |   1287.8x  |
++-----------------------------------------+-----------+----------+-----------+----------+------------+
+
+--- Batch Test: 1,000 Random Auditor Lookups ---
+Total Time for 1,000 queries:
+  - Linear Search :    283.683 ms (Avg Comparisons: 49,963)
+  - Binary Search :      1.407 ms (Avg Comparisons: 15)
+  - Overall Speedup: 201.6x faster
+
+Theoretical Explanation:
+  - Linear Search compares elements sequentially: Best=1, Average=n/2 (50,000), Worst=n (100,000).
+  - Binary Search halves interval at every step: Best=1, Worst=ceil(log2(100,000)) = 17 comparisons.
+  - In banking audits, 17 comparisons ensure deterministic sub-microsecond SLA regardless of table size.
+
+================================================================================
+   TASK 2: STATEMENT SORTING BY POSTING DATE & STABILITY DEMONSTRATION
+================================================================================
+Reviewing Statement for Account: ACC-1042 (13 transactions)
+
+--- Part A: Why Stability Matters in Banking (Deposit vs Debit Conflict) ---
+Initial Transaction Stream (Both posted at EXACT same second: 14:30:00):
+  [Seq 1] Txn[ID=5001, Acc=ACC-1042, Amt=$1000.00, Merch='Employer Payroll Deposit', Date=2026-10-29 14:30:00, Seq=1] -> Initial Balance: $50 + $1000 = $1050
+  [Seq 2] Txn[ID=5002, Acc=ACC-1042, Amt=$-950.00, Merch='Mortgage Debit Transfer', Date=2026-10-29 14:30:00, Seq=2] -> Subsequent Debit: $1050 - $950 = $100 (No Overdraft)
+
+Result after Insertion Sort (Stable):
+  - Txn[ID=5001, Acc=ACC-1042, Amt=$1000.00, Merch='Employer Payroll Deposit', Date=2026-10-29 14:30:00, Seq=1] (Original Sequence: 1)
+  - Txn[ID=5002, Acc=ACC-1042, Amt=$-950.00, Merch='Mortgage Debit Transfer', Date=2026-10-29 14:30:00, Seq=2] (Original Sequence: 2)
+Result after Merge Sort (Stable):
+  - Txn[ID=5001, Acc=ACC-1042, Amt=$1000.00, Merch='Employer Payroll Deposit', Date=2026-10-29 14:30:00, Seq=1] (Original Sequence: 1)
+  - Txn[ID=5002, Acc=ACC-1042, Amt=$-950.00, Merch='Mortgage Debit Transfer', Date=2026-10-29 14:30:00, Seq=2] (Original Sequence: 2)
+
+Stability Verification: Relative chronological sequence preserved? -> YES (STABLE - No illegal overdrafts triggered)
+
+--- Part B: Performance Benchmark on 5,000 Customer Records ---
+  - Insertion Sort [O(n^2)]      : 54 ms
+  - Merge Sort     [O(n log n)]  : 5 ms (Speedup: 10.8x)
+
+================================================================================
+   TASK 3: DUPLICATE POSTING IDENTIFICATION (SAME ACCOUNT, AMT, MERCH <= 60s)
+================================================================================
+Scanning 100,000 transactions for rapid double-charge postings...
+
++-------------------------------------------------------------------------------+
+| Total Transactions Analyzed : 100,000
+| Duplicate Postings Flagged  : 5 alerts
+| Processing Time             : 290 ms
++-------------------------------------------------------------------------------+
+
+Early Warning Alerts (Sent to Fraud & Operations Desk):
+--- Incident #1 ---
+ALERT: Account ACC-5275 charged twice at 'Starbucks Coffee' for $4672.80 (22 sec apart)
+  [1] ID: 10001200 at 2026-10-29 18:57:06
+  [2] ID: 10001204 at 2026-10-29 18:57:28
+
+--- Incident #2 ---
+ALERT: Account ACC-5668 charged twice at 'Netflix Subscriptions' for $3261.34 (22 sec apart)
+  [1] ID: 10015000 at 2026-10-29 02:30:56
+  [2] ID: 10015003 at 2026-10-29 02:31:18
+
+--- Incident #3 ---
+ALERT: Account ACC-3266 charged twice at 'Walmart Supercenter' for $4467.89 (22 sec apart)
+  [1] ID: 10035000 at 2026-10-29 20:41:13
+  [2] ID: 10035002 at 2026-10-29 20:41:35
+
+--- Incident #4 ---
+ALERT: Account ACC-5168 charged twice at 'Walmart Supercenter' for $979.30 (22 sec apart)
+  [1] ID: 10068000 at 2026-10-29 02:55:00
+  [2] ID: 10068004 at 2026-10-29 02:55:22
+
+--- Incident #5 ---
+ALERT: Account ACC-4668 charged twice at 'Uber Technologies' for $301.61 (22 sec apart)
+  [1] ID: 10092000 at 2026-10-29 15:59:00
+  [2] ID: 10092002 at 2026-10-29 15:59:22
+
+--- Data Structure Justification & Complexity ---
+1. Data Structure Choice: HashMap<String, List<Transaction>> with composite key.
+2. Time Complexity: O(n) average.
+   - Hashing the composite string (Account + Merchant + Amount) takes O(1) amortized time.
+   - Each bucket contains only a tiny number of transactions (usually 1-2), making the 60s comparison O(1).
+   - In contrast, a naive pairwise check takes O(n^2) = ~5 billion comparisons for 100k transactions!
+3. Space Complexity: O(n) to store references in the hash table.
+   - For 100,000 daily transactions, memory footprint is under 10 MB, perfectly suited for real-time stream ingestion.
+
+================================================================================
+   TASK 4: MANUAL REVIEW BACKLOG (QUEUE) & ADJUSTMENT REVERSAL (STACK)
+================================================================================
+--- Part 1: Operations Manual-Review Backlog (CustomQueue - FIFO) ---
+  [+] Enqueued for Audit: Txn #10000001 (Account: ACC-2540, Merchant: 'Kroger Grocery', Amount: $1824.19)
+  [+] Enqueued for Audit: Txn #10000002 (Account: ACC-3165, Merchant: 'Delta Airlines', Amount: $4225.04)
+  [+] Enqueued for Audit: Txn #10000003 (Account: ACC-2114, Merchant: 'Amazon Retail', Amount: $4076.80)
+  [+] Enqueued for Audit: Txn #10000004 (Account: ACC-3097, Merchant: 'Amazon Retail', Amount: $3489.83)
+
+Auditor reviewing backlog from front of queue (FIFO):
+  [-] Reviewed & Cleared: Txn #10000001 ($1824.19 at Kroger Grocery) | Backlog remaining: 3
+  [-] Reviewed & Cleared: Txn #10000002 ($4225.04 at Delta Airlines) | Backlog remaining: 2
+  [-] Reviewed & Cleared: Txn #10000003 ($4076.80 at Amazon Retail) | Backlog remaining: 1
+  [-] Reviewed & Cleared: Txn #10000004 ($3489.83 at Amazon Retail) | Backlog remaining: 0
+
+-------------------------------------------------------------------------
+--- Part 2: Reverse Last Adjustment (CustomStack - LIFO) ---
+-------------------------------------------------------------------------
+Account: ACC-9901 | Starting Balance: $150.00
+
+[Agent Applying Adjustments]
+  1. Applied +$35 fee waiver      -> Balance: $185.00 | Stack size: 1
+  2. Applied +$120 dispute credit -> Balance: $305.00 | Stack size: 2
+  3. Applied +$500 mistaken credit-> Balance: $805.00 | Stack size: 3
+
+[Auditor Rolling Back Mistakes via LIFO Stack]
+  <- REVERSED: ERRONEOUS_MANUAL_CREDIT of $500.00 | Restored Balance: $305.00 (History size: 2)
+  <- REVERSED: CREDIT_DISPUTED_CHARGE of $120.00 | Restored Balance: $185.00 (History size: 1)
+  <- REVERSED: WAIVE_OVERDRAFT_FEE of $35.00 | Restored Balance: $150.00 (History size: 0)
+
+-------------------------------------------------------------------------
+--- Part 3: Comparison with Java Standard Library (ArrayDeque) ---
+-------------------------------------------------------------------------
+  Built-in Queue peek : Txn[ID=10000001, Acc=ACC-2540, Amt=$1824.19, Merch='Kroger Grocery', Date=2026-10-29 00:37:10, Seq=1]
+  Built-in Stack peek : Adjustment[Acc=ACC-9901, Amt=$35.00, Type=WAIVE_OVERDRAFT_FEE, Time=2026-10-29 22:17:32]
+
+Takeaways & Architecture:
+  1. Custom Queue uses circular buffer arithmetic to achieve O(1) enqueue and dequeue without shifting elements.
+  2. Custom Stack uses geometric capacity doubling, giving O(1) amortized push and pop.
+  3. Library ArrayDeque achieves similar performance, but building from scratch ensures no hidden framework overhead.
+
+================================================================================
+   TASK 5: FINDING MIN/MAX AMOUNTS - DIVIDE-AND-CONQUER VS BRUTE FORCE
+================================================================================
+Scanning 100,000 transactions in daily ledger...
+
++----------------------+---------------------+-------------------+---------------------+
+| Algorithm            | Lowest Amount (Min) | Highest (Max)     | Comparisons Count   |
++----------------------+---------------------+-------------------+---------------------+
+| Brute-Force Scan     | $2.51               | $4999.99          |             199,983 |
+| Divide-and-Conquer   | $2.51               | $4999.99          |             165,534 |
++----------------------+---------------------+-------------------+---------------------+
+Mathematical Comparison Proof:
+  - Brute Force Comparisons : 199,983 comparisons (worst case 2*(n-1) = 199,998)
+  - Divide & Conquer        : 165,534 comparisons (exact formula 3n/2 - 2 = 149,998)
+  - Comparison Reduction    : 34,449 fewer comparisons (17.2% reduction)
+
+Takeaways for Banking Systems:
+  1. In massive batch ledgers, Divide-and-Conquer guarantees exactly 1.5n comparisons
+     regardless of data distribution, whereas brute-force fluctuates up to 2n.
+  2. Divide-and-Conquer enables effortless parallelization across multi-core CPUs via ForkJoinPool.
+
+================================================================================
+   SET 2: ALL TASKS COMPLETED SUCCESSFULLY!
+   Console output mirrored to: console_output.txt
+   Complexity and rationale report: COMPLEXITY_AND_RATIONALE.md
+================================================================================

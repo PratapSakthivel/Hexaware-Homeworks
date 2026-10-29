@@ -1,0 +1,353 @@
+################################################################################
+#                 SET 3 – HOSPITAL APPOINTMENT DESK                            #
+#      Clinical Operations, Triage Sorting & Scheduling Suite                  #
+################################################################################
+
+>>> STEP 0: INITIALIZING HOSPITAL DATASETS
+[Hospital Data] Generating 20,000 patient records...
+[Hospital Data] Created patients registry.
+[Hospital Data] Generating 5,000 appointments with double-bookings...
+[Hospital Data] Created appointments dataset.
+[Hospital Data] Loaded 20,000 patients and 5,000 appointments into active memory.
+
+================================================================================
+   TASK 1: PATIENT ID RETRIEVAL BENCHMARK - LINEAR VS BINARY (20,000 RECORDS)
+================================================================================
+Total patient records in hospital roster: 20,000
+
+Measuring 1,000 Patient ID Look-ups:
++----------------------+-------------------+-----------------------+------------------+
+| Search Algorithm     | Total Time (1,000)| Avg Time per Lookup   | Avg Comparisons  |
++----------------------+-------------------+-----------------------+------------------+
+| Linear Search        |     51.403 ms   |     51403.40 ns     |         10,281.2 |
+| Binary Search        |      0.441 ms   |       440.80 ns     |             13.3 |
++----------------------+-------------------+-----------------------+------------------+
+Overall Performance: Binary Search is 116.6x faster than Linear Search.
+
+Explanation of Results:
+  1. Comparison Difference: In an array of 20,000 records, linear search averages n/2 = 10,000 comparisons.
+     Binary search requires at most ceil(log2 20,000) = 15 comparisons (empirically ~13.3 comparisons).
+  2. In high-pressure hospital reception desks, binary search yields instantaneous response (~0.001 ms)
+     preventing receptionist UI freezing and lookup bottlenecks.
+
+================================================================================
+   TASK 2: APPOINTMENT SORTING BENCHMARK - SELECTION SORT VS QUICK SORT
+================================================================================
+--------------------------------------------------------------------------------
+  TYPED PAPER-TRACE: FIRST 3 PASSES OF SELECTION SORT
+  Sorting Criteria: (1) Urgency (L1 > L2 > L3 > L4), (2) Arrival Time
+--------------------------------------------------------------------------------
+Initial Appointment List:
+  Index 0: Apt[ID=101, PatID=1, Name='Alice', Urgency=STANDARD_L3, Arrival=09:30, Slot=09:30, Dur=30min]
+  Index 1: Apt[ID=102, PatID=2, Name='Bob', Urgency=CRITICAL_L1, Arrival=10:00, Slot=10:00, Dur=30min]
+  Index 2: Apt[ID=103, PatID=3, Name='Carol', Urgency=URGENT_L2, Arrival=09:15, Slot=09:15, Dur=30min]
+  Index 3: Apt[ID=104, PatID=4, Name='Dave', Urgency=CRITICAL_L1, Arrival=09:00, Slot=09:00, Dur=30min]
+  Index 4: Apt[ID=105, PatID=5, Name='Eve', Urgency=ROUTINE_L4, Arrival=08:45, Slot=08:45, Dur=30min]
+  Index 5: Apt[ID=106, PatID=6, Name='Frank', Urgency=URGENT_L2, Arrival=08:30, Slot=08:30, Dur=30min]
+
+=== PASS 1 (Finding smallest from Index 0 to 5) ===
+  Compare arr[1] (CRITICAL_L1, 10:00) with current minimum arr[0] (STANDARD_L3, 09:30) -> NEW MINIMUM at Index 1!
+  Compare arr[2] (URGENT_L2, 09:15) with current minimum arr[1] (CRITICAL_L1, 10:00) -> no change
+  Compare arr[3] (CRITICAL_L1, 09:00) with current minimum arr[1] (CRITICAL_L1, 10:00) -> NEW MINIMUM at Index 3!
+  Compare arr[4] (ROUTINE_L4, 08:45) with current minimum arr[3] (CRITICAL_L1, 09:00) -> no change
+  Compare arr[5] (URGENT_L2, 08:30) with current minimum arr[3] (CRITICAL_L1, 09:00) -> no change
+  >> SWAP arr[0] (Alice) with arr[3] (Dave)
+  Array after Pass 1: [ *Dave* Bob Carol Alice Eve Frank ]  (*indicates settled position)
+
+=== PASS 2 (Finding smallest from Index 1 to 5) ===
+  Compare arr[2] (URGENT_L2, 09:15) with current minimum arr[1] (CRITICAL_L1, 10:00) -> no change
+  Compare arr[3] (STANDARD_L3, 09:30) with current minimum arr[1] (CRITICAL_L1, 10:00) -> no change
+  Compare arr[4] (ROUTINE_L4, 08:45) with current minimum arr[1] (CRITICAL_L1, 10:00) -> no change
+  Compare arr[5] (URGENT_L2, 08:30) with current minimum arr[1] (CRITICAL_L1, 10:00) -> no change
+  >> NO SWAP (arr[1] is already the minimum)
+  Array after Pass 2: [ *Dave* *Bob* Carol Alice Eve Frank ]  (*indicates settled position)
+
+=== PASS 3 (Finding smallest from Index 2 to 5) ===
+  Compare arr[3] (STANDARD_L3, 09:30) with current minimum arr[2] (URGENT_L2, 09:15) -> no change
+  Compare arr[4] (ROUTINE_L4, 08:45) with current minimum arr[2] (URGENT_L2, 09:15) -> no change
+  Compare arr[5] (URGENT_L2, 08:30) with current minimum arr[2] (URGENT_L2, 09:15) -> NEW MINIMUM at Index 5!
+  >> SWAP arr[2] (Carol) with arr[5] (Frank)
+  Array after Pass 3: [ *Dave* *Bob* *Frank* Alice Eve Carol ]  (*indicates settled position)
+
+Benchmarking on 3,000 appointments:
++----------------------+-------------------+-----------------------+------------------+
+| Algorithm            | Running Time (ms) | Total Swaps           | Comparisons      |
++----------------------+-------------------+-----------------------+------------------+
+| Selection Sort       |             42 ms |                 2,988 |        4,498,500 |
+| Quick Sort           |              3 ms |                17,000 |           39,961 |
++----------------------+-------------------+-----------------------+------------------+
+
+Comparative Takeaways:
+  1. Swap Count: Selection Sort performed 2,988 swaps (at most n-1 = 2,999).
+     Quick Sort performed 17,000 swaps (5x more memory writes).
+  2. Running Time: Quick Sort was 14.0x faster due to O(n log n) comparison efficiency.
+  3. Trade-off: If memory writes are expensive (e.g. Flash/EEPROM devices), Selection Sort
+     is optimal; for high-throughput roster sorting, Quick Sort is vastly superior.
+
+================================================================================
+   TASK 3: DOUBLE-BOOKED SLOT DETECTION (SAME PATIENT AND SLOT)
+================================================================================
+Analyzing 5,000 scheduled appointments on shared hospital roster...
+
++--------------------------+-------------------+--------------------+-----------------+
+| Detection Approach       | Execution Time    | Time Complexity    | Conflicts Found |
++--------------------------+-------------------+--------------------+-----------------+
+| Hash-Based (HashSet/Map) |             15 ms | O(n) average       |              34 |
+| Naive List Scan (Nested) |             52 ms | O(n^2) quadratic   |              34 |
++--------------------------+-------------------+--------------------+-----------------+
+Speedup Factor: Hash-based approach is 3.5x faster than a list scan.
+
+Detected Double-Booked Conflicts (Immediate Action Required):
+--- Conflict #1 ---
+DOUBLE-BOOKING DETECTED: Patient John Martinez (ID: 500585) booked twice for Slot '11:30-12:00':
+  [Original] Apt ID: 10150 (URGENT_L2, Arrival: 15:07)
+  [Conflict] Apt ID: 10155 (URGENT_L2, Arrival: 15:12)
+
+--- Conflict #2 ---
+DOUBLE-BOOKING DETECTED: Patient Richard Miller (ID: 511439) booked twice for Slot '13:30-14:00':
+  [Original] Apt ID: 10641 (STANDARD_L3, Arrival: 12:33)
+  [Conflict] Apt ID: 10851 (STANDARD_L3, Arrival: 13:24)
+
+--- Conflict #3 ---
+DOUBLE-BOOKING DETECTED: Patient Patricia Gonzalez (ID: 506817) booked twice for Slot '09:30-10:00':
+  [Original] Apt ID: 10850 (URGENT_L2, Arrival: 12:34)
+  [Conflict] Apt ID: 10853 (URGENT_L2, Arrival: 12:39)
+
+--- Conflict #4 ---
+DOUBLE-BOOKING DETECTED: Patient Richard Miller (ID: 511439) booked twice for Slot '13:30-14:00':
+  [Original] Apt ID: 10641 (STANDARD_L3, Arrival: 12:33)
+  [Conflict] Apt ID: 11113 (CRITICAL_L1, Arrival: 14:15)
+
+--- Conflict #5 ---
+DOUBLE-BOOKING DETECTED: Patient Richard Johnson (ID: 503284) booked twice for Slot '16:00-16:30':
+  [Original] Apt ID: 10953 (ROUTINE_L4, Arrival: 10:33)
+  [Conflict] Apt ID: 11167 (STANDARD_L3, Arrival: 11:53)
+
+--- Conflict #6 ---
+DOUBLE-BOOKING DETECTED: Patient Joseph Williams (ID: 501504) booked twice for Slot '13:30-14:00':
+  [Original] Apt ID: 11900 (URGENT_L2, Arrival: 10:32)
+  [Conflict] Apt ID: 11904 (URGENT_L2, Arrival: 10:37)
+
+--- Conflict #7 ---
+DOUBLE-BOOKING DETECTED: Patient David Anderson (ID: 517227) booked twice for Slot '13:30-14:00':
+  [Original] Apt ID: 10492 (CRITICAL_L1, Arrival: 11:39)
+  [Conflict] Apt ID: 12037 (URGENT_L2, Arrival: 10:03)
+
+--- Conflict #8 ---
+DOUBLE-BOOKING DETECTED: Patient Patricia Hernandez (ID: 519771) booked twice for Slot '16:30-17:00':
+  [Original] Apt ID: 10236 (STANDARD_L3, Arrival: 14:09)
+  [Conflict] Apt ID: 12064 (ROUTINE_L4, Arrival: 14:01)
+
+--- Conflict #9 ---
+DOUBLE-BOOKING DETECTED: Patient William Smith (ID: 513497) booked twice for Slot '13:00-13:30':
+  [Original] Apt ID: 11721 (STANDARD_L3, Arrival: 10:34)
+  [Conflict] Apt ID: 12356 (URGENT_L2, Arrival: 15:17)
+
+--- Conflict #10 ---
+DOUBLE-BOOKING DETECTED: Patient Jennifer Johnson (ID: 516553) booked twice for Slot '15:30-16:00':
+  [Original] Apt ID: 11687 (STANDARD_L3, Arrival: 12:52)
+  [Conflict] Apt ID: 12673 (URGENT_L2, Arrival: 13:14)
+
+--- Conflict #11 ---
+DOUBLE-BOOKING DETECTED: Patient Richard Smith (ID: 501115) booked twice for Slot '08:30-09:00':
+  [Original] Apt ID: 10676 (URGENT_L2, Arrival: 11:59)
+  [Conflict] Apt ID: 12793 (ROUTINE_L4, Arrival: 08:52)
+
+--- Conflict #12 ---
+DOUBLE-BOOKING DETECTED: Patient John Jones (ID: 509595) booked twice for Slot '09:00-09:30':
+  [Original] Apt ID: 10716 (ROUTINE_L4, Arrival: 09:10)
+  [Conflict] Apt ID: 12861 (URGENT_L2, Arrival: 14:12)
+
+--- Conflict #13 ---
+DOUBLE-BOOKING DETECTED: Patient Susan Miller (ID: 500957) booked twice for Slot '16:00-16:30':
+  [Original] Apt ID: 12644 (URGENT_L2, Arrival: 11:47)
+  [Conflict] Apt ID: 12947 (ROUTINE_L4, Arrival: 12:14)
+
+--- Conflict #14 ---
+DOUBLE-BOOKING DETECTED: Patient David Anderson (ID: 512523) booked twice for Slot '14:30-15:00':
+  [Original] Apt ID: 10962 (URGENT_L2, Arrival: 11:55)
+  [Conflict] Apt ID: 13042 (URGENT_L2, Arrival: 13:24)
+
+--- Conflict #15 ---
+DOUBLE-BOOKING DETECTED: Patient Robert Lopez (ID: 507773) booked twice for Slot '11:00-11:30':
+  [Original] Apt ID: 13200 (STANDARD_L3, Arrival: 08:58)
+  [Conflict] Apt ID: 13206 (STANDARD_L3, Arrival: 09:03)
+
+--- Conflict #16 ---
+DOUBLE-BOOKING DETECTED: Patient David Brown (ID: 514345) booked twice for Slot '10:30-11:00':
+  [Original] Apt ID: 11363 (ROUTINE_L4, Arrival: 11:52)
+  [Conflict] Apt ID: 13382 (STANDARD_L3, Arrival: 14:31)
+
+--- Conflict #17 ---
+DOUBLE-BOOKING DETECTED: Patient John Johnson (ID: 507932) booked twice for Slot '09:30-10:00':
+  [Original] Apt ID: 12210 (STANDARD_L3, Arrival: 16:41)
+  [Conflict] Apt ID: 13709 (URGENT_L2, Arrival: 10:39)
+
+--- Conflict #18 ---
+DOUBLE-BOOKING DETECTED: Patient James Wilson (ID: 516410) booked twice for Slot '11:00-11:30':
+  [Original] Apt ID: 12552 (STANDARD_L3, Arrival: 10:02)
+  [Conflict] Apt ID: 13739 (CRITICAL_L1, Arrival: 12:27)
+
+--- Conflict #19 ---
+DOUBLE-BOOKING DETECTED: Patient Robert Hernandez (ID: 503704) booked twice for Slot '13:00-13:30':
+  [Original] Apt ID: 10102 (CRITICAL_L1, Arrival: 09:51)
+  [Conflict] Apt ID: 13782 (CRITICAL_L1, Arrival: 13:51)
+
+--- Conflict #20 ---
+DOUBLE-BOOKING DETECTED: Patient Jessica Williams (ID: 513422) booked twice for Slot '13:30-14:00':
+  [Original] Apt ID: 10832 (CRITICAL_L1, Arrival: 10:59)
+  [Conflict] Apt ID: 13805 (STANDARD_L3, Arrival: 12:42)
+
+--- Conflict #21 ---
+DOUBLE-BOOKING DETECTED: Patient Mary Hernandez (ID: 502046) booked twice for Slot '10:00-10:30':
+  [Original] Apt ID: 13205 (URGENT_L2, Arrival: 16:37)
+  [Conflict] Apt ID: 13838 (URGENT_L2, Arrival: 14:32)
+
+--- Conflict #22 ---
+DOUBLE-BOOKING DETECTED: Patient Joseph Martinez (ID: 503609) booked twice for Slot '08:30-09:00':
+  [Original] Apt ID: 12942 (ROUTINE_L4, Arrival: 08:59)
+  [Conflict] Apt ID: 13849 (ROUTINE_L4, Arrival: 10:22)
+
+--- Conflict #23 ---
+DOUBLE-BOOKING DETECTED: Patient Jessica Hernandez (ID: 501365) booked twice for Slot '09:30-10:00':
+  [Original] Apt ID: 13663 (ROUTINE_L4, Arrival: 11:07)
+  [Conflict] Apt ID: 13921 (CRITICAL_L1, Arrival: 16:09)
+
+--- Conflict #24 ---
+DOUBLE-BOOKING DETECTED: Patient William Jones (ID: 518677) booked twice for Slot '11:30-12:00':
+  [Original] Apt ID: 11761 (ROUTINE_L4, Arrival: 09:39)
+  [Conflict] Apt ID: 13976 (URGENT_L2, Arrival: 10:19)
+
+--- Conflict #25 ---
+DOUBLE-BOOKING DETECTED: Patient David Wilson (ID: 501353) booked twice for Slot '15:30-16:00':
+  [Original] Apt ID: 12643 (STANDARD_L3, Arrival: 08:55)
+  [Conflict] Apt ID: 14023 (CRITICAL_L1, Arrival: 15:47)
+
+--- Conflict #26 ---
+DOUBLE-BOOKING DETECTED: Patient William Wilson (ID: 513790) booked twice for Slot '09:30-10:00':
+  [Original] Apt ID: 10396 (CRITICAL_L1, Arrival: 12:14)
+  [Conflict] Apt ID: 14035 (ROUTINE_L4, Arrival: 15:24)
+
+--- Conflict #27 ---
+DOUBLE-BOOKING DETECTED: Patient Linda Hernandez (ID: 512156) booked twice for Slot '11:00-11:30':
+  [Original] Apt ID: 13560 (CRITICAL_L1, Arrival: 16:04)
+  [Conflict] Apt ID: 14057 (STANDARD_L3, Arrival: 16:56)
+
+--- Conflict #28 ---
+DOUBLE-BOOKING DETECTED: Patient Michael Jones (ID: 501976) booked twice for Slot '10:00-10:30':
+  [Original] Apt ID: 14130 (CRITICAL_L1, Arrival: 10:26)
+  [Conflict] Apt ID: 14199 (URGENT_L2, Arrival: 14:03)
+
+--- Conflict #29 ---
+DOUBLE-BOOKING DETECTED: Patient Jennifer Hernandez (ID: 504769) booked twice for Slot '15:30-16:00':
+  [Original] Apt ID: 12338 (STANDARD_L3, Arrival: 14:09)
+  [Conflict] Apt ID: 14299 (URGENT_L2, Arrival: 12:58)
+
+--- Conflict #30 ---
+DOUBLE-BOOKING DETECTED: Patient Linda Lopez (ID: 510987) booked twice for Slot '10:00-10:30':
+  [Original] Apt ID: 14500 (STANDARD_L3, Arrival: 11:20)
+  [Conflict] Apt ID: 14502 (STANDARD_L3, Arrival: 11:25)
+
+--- Conflict #31 ---
+DOUBLE-BOOKING DETECTED: Patient Elizabeth Gonzalez (ID: 503259) booked twice for Slot '10:30-11:00':
+  [Original] Apt ID: 12365 (URGENT_L2, Arrival: 10:43)
+  [Conflict] Apt ID: 14513 (CRITICAL_L1, Arrival: 16:01)
+
+--- Conflict #32 ---
+DOUBLE-BOOKING DETECTED: Patient Joseph Davis (ID: 503506) booked twice for Slot '15:30-16:00':
+  [Original] Apt ID: 13910 (ROUTINE_L4, Arrival: 11:29)
+  [Conflict] Apt ID: 14751 (ROUTINE_L4, Arrival: 09:19)
+
+--- Conflict #33 ---
+DOUBLE-BOOKING DETECTED: Patient Joseph Miller (ID: 509066) booked twice for Slot '14:00-14:30':
+  [Original] Apt ID: 12205 (URGENT_L2, Arrival: 08:27)
+  [Conflict] Apt ID: 14807 (URGENT_L2, Arrival: 14:35)
+
+--- Conflict #34 ---
+DOUBLE-BOOKING DETECTED: Patient Joseph Johnson (ID: 516312) booked twice for Slot '08:30-09:00':
+  [Original] Apt ID: 12966 (CRITICAL_L1, Arrival: 14:44)
+  [Conflict] Apt ID: 14862 (STANDARD_L3, Arrival: 16:04)
+
+Why a List Scan is Not Acceptable at this Volume:
+  1. Complexity Bottleneck: An O(n^2) list scan performs n*(n-1)/2 = 12.5 million checks for 5,000 records.
+     If the hospital expands to 50,000 bookings, the list scan requires 1.25 billion checks (over 45 seconds).
+  2. Concurrency & Race Conditions: In a shared hospital roster where hundreds of receptionists
+     book appointments simultaneously, locking the roster for tens of seconds causes catastrophic UI freezes.
+  3. The Hash-based structure offers O(1) amortized lock-free verification, ensuring immediate booking feedback.
+
+================================================================================
+   TASK 4: WALK-IN TOKEN LINE (QUEUE) & RECENT PATIENTS VIEWED (STACK)
+================================================================================
+--- Part 1: Walk-In Token Line (CustomQueue - FIFO) ---
+Reception issuing walk-in tokens to arriving patients:
+  [Token #1] Issued to: Elizabeth Brown (Age: 68)
+  [Token #2] Issued to: Richard Brown (Age: 54)
+  [Token #3] Issued to: Susan Smith (Age: 60)
+  [Token #4] Issued to: Susan Thomas (Age: 5)
+  [Token #5] Issued to: John Miller (Age: 94)
+
+Triage Nurse calling patients in FIFO order:
+  [Call #1] Now Serving: Elizabeth Brown (ID: 500001) | Waiting in lobby: 4
+  [Call #2] Now Serving: Richard Brown (ID: 500002) | Waiting in lobby: 3
+  [Call #3] Now Serving: Susan Smith (ID: 500003) | Waiting in lobby: 2
+  [Call #4] Now Serving: Susan Thomas (ID: 500004) | Waiting in lobby: 1
+  [Call #5] Now Serving: John Miller (ID: 500005) | Waiting in lobby: 0
+
+-------------------------------------------------------------------------
+--- Part 2: Doctor's 'Recent Patients Viewed' Navigation (CustomStack - LIFO) ---
+-------------------------------------------------------------------------
+Doctor Dr. Henderson opens clinical charts sequentially:
+  [Chart Viewed] Elizabeth Brown (ID: 500001, Phone: +1-555-2530) -> History depth: 1
+  [Chart Viewed] Richard Brown (ID: 500002, Phone: +1-555-5636) -> History depth: 2
+  [Chart Viewed] Susan Smith (ID: 500003, Phone: +1-555-9999) -> History depth: 3
+  [Chart Viewed] Susan Thomas (ID: 500004, Phone: +1-555-8874) -> History depth: 4
+
+Doctor clicks 'Back / Previous Chart' button (LIFO Navigation):
+  <- Returned to Chart: Susan Thomas (ID: 500004) | History remaining: 3
+  <- Returned to Chart: Susan Smith (ID: 500003) | History remaining: 2
+  <- Returned to Chart: Richard Brown (ID: 500002) | History remaining: 1
+  <- Returned to Chart: Elizabeth Brown (ID: 500001) | History remaining: 0
+
+--- Data Structure Justification ---
+1. Walk-In Line (Queue - FIFO): Guarantees strict fairness. Arriving patients are served
+   in the exact sequence they received tokens, preventing dispute and queue-jumping.
+2. Recent Patients History (Stack - LIFO): The medical chart viewed most recently
+   must be the immediate candidate when hitting 'Back', perfectly adhering to LIFO semantics.
+
+================================================================================
+   TASK 5: DOCTOR SHIFT SCHEDULER - DYNAMIC PROGRAMMING VS GREEDY
+================================================================================
+Requested Overlapping Appointment Slots for Doctor's Shift:
+  - [Minor Clinic A: 08:30-09:30 (60 min, Weight: 30)]
+  - [Major Surgery B: 09:00-13:00 (240 min, Weight: 180)]
+  - [Routine Followup: 12:30-13:30 (60 min, Weight: 30)]
+  - [Cardiology Proc: 13:30-16:00 (150 min, Weight: 140)]
+
+1. Greedy Selection (Earliest Finish Time First):
+   - Greedy greedily selects 'Minor Clinic A' (finishes earliest at 09:30).
+   - This blocks the 'Major Surgery B' (which started at 09:00).
+   - Next, Greedy picks 'Routine Followup' (12:30-13:30), then 'Cardiology Proc' (13:30-16:00).
+   => GREEDY RESULT: Total Value = 200 pts | Appointments: [[Minor Clinic A: 08:30-09:30 (60 min, Weight: 30)], [Routine Followup: 12:30-13:30 (60 min, Weight: 30)], [Cardiology Proc: 13:30-16:00 (150 min, Weight: 140)]]
+
+2. Dynamic Programming Optimal Selection (Weighted Subproblem Tabulation):
+   - DP evaluates choice at each interval: Include vs Exclude.
+   - DP recognizes Major Surgery (180) + Cardiology (140) = 320 pts > Greedy's 200 pts!
+   => DP OPTIMAL RESULT: Total Value = 320 pts | Appointments: [[Major Surgery B: 09:00-13:00 (240 min, Weight: 180)], [Cardiology Proc: 13:30-16:00 (150 min, Weight: 140)]]
+
++----------------------+-------------------+-----------------------+------------------+
+| Algorithm            | Total Care Value  | Appointments Accepted | Optimality       |
++----------------------+-------------------+-----------------------+------------------+
+| Greedy Approach      |            200 pts |                     3 | SUB-OPTIMAL      |
+| Dynamic Programming  |            320 pts |                     2 | OPTIMAL (+60%)   |
++----------------------+-------------------+-----------------------+------------------+
+
+--- Algorithmic Conclusion ---
+1. When appointment durations and patient acuity weights vary, the greedy-choice property fails.
+2. Dynamic Programming computes the true globally optimal shift roster in O(n log n) time,
+   maximizing physician clinical productivity and patient care outcome metrics.
+
+================================================================================
+   SET 3: ALL TASKS COMPLETED SUCCESSFULLY!
+   Console output mirrored to: console_output.txt
+   Complexity and rationale report: COMPLEXITY_AND_RATIONALE.md
+================================================================================
