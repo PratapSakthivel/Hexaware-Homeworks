@@ -16,6 +16,7 @@ Hexaware-Homeworks/
 │   ├── Set1_RetailOrderDesk/               # Set 1: Online Retail Order Desk DSA
 │   ├── Set2_RetailBankingTransactionReview/ # Set 2: Retail Banking Transaction Review
 │   └── Set3_HospitalAppointmentDesk/       # Set 3: Hospital Appointment Desk
+├── Day_02/                                 # Day 2: Insurance Claims Processing DSA
 └── .gitignore
 ```
 
@@ -32,3 +33,14 @@ All three comprehensive problem sets for **Day 1** are housed inside the [`Day-1
 | **[Set 3: Hospital Appointment](./Day-1/Set3_HospitalAppointmentDesk)** | Healthcare Roster (20,000 patients) | Patient ID search over 20k records, Multi-key Urgency & Arrival sorting (Selection vs Quick Sort with 3-pass trace), Double-booking detection ($O(n)$ HashSet vs $O(n^2)$ list scan), Walk-in Queue & Stack, Doctor shift scheduling (Weighted Interval DP). | [View Note](./Day-1/Set3_HospitalAppointmentDesk/COMPLEXITY_AND_RATIONALE.md) |
 
 Each set contains complete standalone Java source code, high-volume datasets, full captured console outputs, complexity analysis documents, and one-click execution scripts (`run.ps1` and `run.bat`).
+
+---
+
+## Day 2 – Insurance Claims Processing (Java)
+
+The Day 2 assignment is located in the [`Day_02/`](./Day_02/) folder:
+
+| Module | Business Domain | Key Algorithmic Concepts Implemented | Documentation |
+| :--- | :--- | :--- | :---: |
+| **[Day 2: Insurance Claims Processing](./Day_02)** | Insurance Claims | 1. Claim ID Binary Search Tree (BST) with in-order/pre-order/post-order traversals.<br>2. Hashing for duplicate claim detection (normalized policy + incident date).<br>3. Approval-stage Graph (BFS shortest path & DFS cycle detection).<br>4. Sliding Window (Consecutive days strictly above 100 claims).<br>5. Two Pointers (Merging sorted regional claim lists in $O(n+m)$). | [View Readme](./Day_02/README.md) & [Complexity Table](./Day_02/complexity_table.txt) |
+
