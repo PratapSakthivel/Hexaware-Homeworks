@@ -17,6 +17,10 @@ Hexaware-Homeworks/
 │   ├── Set2_RetailBankingTransactionReview/ # Set 2: Retail Banking Transaction Review
 │   └── Set3_HospitalAppointmentDesk/       # Set 3: Hospital Appointment Desk
 ├── Day_02/                                 # Day 2: Insurance Claims Processing DSA
+├── Day-5/                                  # Day 5: Databases, Normalisation and Data Definition (MySQL 8.4)
+│   ├── Set1_RetailInventoryManagement/     # Set 1: Retail Inventory Management
+│   ├── Set2_BankBranchAccounts/            # Set 2: Bank Branch Accounts
+│   └── Set3_HospitalPatientRecords/        # Set 3: Hospital Patient Records
 └── .gitignore
 ```
 
@@ -43,4 +47,17 @@ The Day 2 assignment is located in the [`Day_02/`](./Day_02/) folder:
 | Module | Business Domain | Key Algorithmic Concepts Implemented | Documentation |
 | :--- | :--- | :--- | :---: |
 | **[Day 2: Insurance Claims Processing](./Day_02)** | Insurance Claims | 1. Claim ID Binary Search Tree (BST) with in-order/pre-order/post-order traversals.<br>2. Hashing for duplicate claim detection (normalized policy + incident date).<br>3. Approval-stage Graph (BFS shortest path & DFS cycle detection).<br>4. Sliding Window (Consecutive days strictly above 100 claims).<br>5. Two Pointers (Merging sorted regional claim lists in $O(n+m)$). | [View Readme](./Day_02/README.md) & [Complexity Table](./Day_02/complexity_table.txt) |
+
+---
+
+## Day 5 – Databases, Normalisation and Data Definition – MySQL 8.4 LTS
+
+All three comprehensive database engineering sets for **Day 5** are housed inside the [`Day-5/`](./Day-5/) folder:
+
+| Module | Business Domain | Key Database Concepts & Deliverables | Documentation |
+| :--- | :--- | :--- | :---: |
+| **[Set 1: Retail Inventory Management](./Day-5/Set1_RetailInventoryManagement)** | Retail Inventory (Spreadsheet to 3NF) | 3NF InnoDB schema (`suppliers`, `warehouses`, `products`, `inventory`), PK/FK/CHECK/UNIQUE constraints, ON DELETE RESTRICT / ON UPDATE CASCADE, 4 failing insert demonstrations, UPDATE/DELETE before-after evidence, `information_schema` table profiling. | [View Report](./Day-5/Set1_RetailInventoryManagement/failing_inserts_and_er_report.md) |
+| **[Set 2: Bank Branch Accounts](./Day-5/Set2_BankBranchAccounts)** | Core Banking Accounts | 3NF/BCNF schema (`branches`, `relationship_managers`, `customers`, `accounts`), AUTO_INCREMENT, DECIMAL(15,2) financial justification, DROP vs TRUNCATE vs DELETE comparative analysis on rollback and AUTO_INCREMENT, complex WHERE queries (AND, OR, IN, BETWEEN, LIKE), ALTER TABLE. | [View Report](./Day-5/Set2_BankBranchAccounts/data_types_and_er_report.md) |
+| **[Set 3: Hospital Patient Records](./Day-5/Set3_HospitalPatientRecords)** | Clinical Visits & Healthcare | 3NF decomposition (`departments`, `patients`, `doctors`, `visits`, `billings`), non-negative bill check, default status OPEN, database & table file lifecycle analysis (`.ibd` behavior on rename/drop), monthly visit & department doctor queries, SQL vs NoSQL comparison table. | [View Report](./Day-5/Set3_HospitalPatientRecords/sql_vs_nosql_and_er_report.md) |
+
 
