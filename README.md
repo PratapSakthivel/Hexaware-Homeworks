@@ -17,6 +17,10 @@ Hexaware-Homeworks/
 │   ├── Set2_RetailBankingTransactionReview/ # Set 2: Retail Banking Transaction Review
 │   └── Set3_HospitalAppointmentDesk/       # Set 3: Hospital Appointment Desk
 ├── Day_02/                                 # Day 2: Insurance Claims Processing DSA
+├── Day-3/                                  # Day 3: Agile and Scrum Foundations & Backlog Workshop
+│   ├── Set1_OnlineGroceryDelivery/         # Set 1: Online Grocery Delivery App
+│   ├── Set2_InsuranceClaimsPortal/         # Set 2: Insurance Claims Portal
+│   └── Set3_HospitalAppointmentBooking/    # Set 3: Hospital Appointment Booking App
 ├── Day-5/                                  # Day 5: Databases, Normalisation and Data Definition (MySQL 8.4)
 │   ├── Set1_RetailInventoryManagement/     # Set 1: Retail Inventory Management
 │   ├── Set2_BankBranchAccounts/            # Set 2: Bank Branch Accounts
@@ -47,6 +51,19 @@ The Day 2 assignment is located in the [`Day_02/`](./Day_02/) folder:
 | Module | Business Domain | Key Algorithmic Concepts Implemented | Documentation |
 | :--- | :--- | :--- | :---: |
 | **[Day 2: Insurance Claims Processing](./Day_02)** | Insurance Claims | 1. Claim ID Binary Search Tree (BST) with in-order/pre-order/post-order traversals.<br>2. Hashing for duplicate claim detection (normalized policy + incident date).<br>3. Approval-stage Graph (BFS shortest path & DFS cycle detection).<br>4. Sliding Window (Consecutive days strictly above 100 claims).<br>5. Two Pointers (Merging sorted regional claim lists in $O(n+m)$). | [View Readme](./Day_02/README.md) & [Complexity Table](./Day_02/complexity_table.txt) |
+
+---
+
+## Day 3 – Agile and Scrum – Foundations and Backlog Workshop
+
+All three comprehensive Agile backlog engineering sets for **Day 3** are housed inside the [`Day-3/`](./Day-3/) folder:
+
+| Module | Business Domain | Key Agile / Scrum Deliverables | Documentation |
+| :--- | :--- | :--- | :---: |
+| **[Set 1: Online Grocery Delivery](./Day-3/Set1_OnlineGroceryDelivery)** | E-Commerce Grocery Delivery | Product Vision, Scrum Roles & Anti-Patterns (PO, SM, Developers), 3 Epics, 12 User Stories, INVEST checklist rewrites, Given/When/Then acceptance criteria (including negative edge cases), MoSCoW prioritization, Planning Poker (48 pts), DoR and DoD. | [View Workshop Report](./Day-3/Set1_OnlineGroceryDelivery/README.md) |
+| **[Set 2: Insurance Claims Portal](./Day-3/Set2_InsuranceClaimsPortal)** | Insurance Claims Self-Service | Product Vision, Half-page Waterfall vs Agile analysis, 4 Epics, 13 User Stories, vertical slicing vs horizontal architectural layering, First Notice of Loss (FNOL) Given/When/Then criteria, Planning Poker outlier discussion (51 pts), JIRA board workflow & DoD. | [View Workshop Report](./Day-3/Set2_InsuranceClaimsPortal/README.md) |
+| **[Set 3: Hospital Appointment Booking](./Day-3/Set3_HospitalAppointmentBooking)** | Clinical Appointment Scheduling | Product Vision, Stakeholder-to-Scrum role mapping, 4 Epics, 12 User Stories, Given/When/Then criteria including concurrency conflicts ("slot already taken"), Story Points vs Hours conceptual analysis, Value vs Effort ranking (51 pts), 6-item DoR & DoD checklists. | [View Workshop Report](./Day-3/Set3_HospitalAppointmentBooking/README.md) |
+
 
 ---
 
