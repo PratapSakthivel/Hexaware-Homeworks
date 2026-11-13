@@ -29,6 +29,10 @@ Hexaware-Homeworks/
 │   ├── Set1_RetailSalesReporting/          # Set 1: Retail Sales Reporting
 │   ├── Set2_InsurancePolicyReporting/      # Set 2: Insurance Policy Reporting
 │   └── Set3_TelecomUsageAndBilling/        # Set 3: Telecom Usage and Billing
+├── Day-7/                                  # Day 7: Joins and Subqueries (MySQL 8.4)
+│   ├── Set1_LogisticsShipmentAnalysis/     # Set 1: Logistics Shipment Analysis
+│   ├── Set2_BankLoanPortfolio/             # Set 2: Bank Loan Portfolio
+│   └── Set3_RetailReturnsAndRefunds/       # Set 3: Retail Returns and Refunds
 └── .gitignore
 ```
 
@@ -92,6 +96,19 @@ All three comprehensive reporting and analytical query sets for **Day 6** are ho
 | **[Set 1: Retail Sales Reporting](./Day-6/Set1_RetailSalesReporting)** | Retail Sales Analytics | 8 queries (top-5 products by revenue, month-wise sales, HAVING > 3 orders, avg basket value by city, orders without payment, inactive customers, category revenue share, peak sales day), string/date/math functions, NULL behavior analysis (`COUNT(*)`, `COUNT(col)`, `SUM`, `AVG`), WHERE vs HAVING. | [View Output & Analysis](./Day-6/Set1_RetailSalesReporting/output_and_analysis_report.md) |
 | **[Set 2: Insurance Policy Reporting](./Day-6/Set2_InsurancePolicyReporting)** | Insurance Policy Administration | 8 queries (policies expiring in 30 days, premium by product, multi-policyholders, claim ratio by product, policies without claims, age-band premium analysis, monthly new policies, top-5 agents), masked policy numbers, loss ratio > 60% with HAVING, INNER/LEFT/CROSS join justifications. | [View Output & Analysis](./Day-6/Set2_InsurancePolicyReporting/output_and_analysis_report.md) |
 | **[Set 3: Telecom Usage and Billing](./Day-6/Set3_TelecomUsageAndBilling)** | Telecom Usage & Revenue Assurance | 8 queries (call minutes by plan, data limit overage detection, month-wise revenue, overdue invoices > 15 days, dormant subscribers, ARPU by circle, plan popularity share, top-10 data consumers), NULL handling via `COALESCE` / `IFNULL`, revenue per plan and circle matrix. | [View Output & Analysis](./Day-6/Set3_TelecomUsageAndBilling/output_and_analysis_report.md) |
+
+---
+
+## Day 7 – Joins and Subqueries – MySQL 8.4 LTS
+
+All three comprehensive query optimization and relational analysis sets for **Day 7** are housed inside the [`Day-7/`](./Day-7/) folder:
+
+| Module | Business Domain | Key SQL Joins & Subqueries Deliverables | Documentation |
+| :--- | :--- | :--- | :---: |
+| **[Set 1: Logistics Shipment Analysis](./Day-7/Set1_LogisticsShipmentAnalysis)** | Global Logistics Network | 10 queries (INNER, LEFT, RIGHT, and Self Joins; `IN`, `EXISTS`, `ANY`, `ALL` subqueries; vehicle fleet comparisons; second-highest shipping cost per hub via nested subquery), Subquery-to-Join query rewrites with execution plan/readability comparisons, Join-choice rationale matrix. | [View Join Choice & Analysis](./Day-7/Set1_LogisticsShipmentAnalysis/join_choice_and_analysis_report.md) |
+| **[Set 2: Bank Loan Portfolio](./Day-7/Set2_BankLoanPortfolio)** | Core Banking & Loan Risk | 10 queries (default risk >3 overdue instalments, multi-branch exposures, borrowers who act as guarantors via self join, dormant branches with no loans, exposure exceeding branch average via correlated subquery, `EXISTS` & `NOT EXISTS` for repayment lapses in 60 days, branches whose peak loan exceeds avg of all branch peak loans), systemic circular risk analysis. | [View Subquery Justification](./Day-7/Set2_BankLoanPortfolio/subquery_justification_report.md) |
+| **[Set 3: Retail Returns and Refunds](./Day-7/Set3_RetailReturnsAndRefunds)** | Omni-Channel Retail Desk | 10 queries (products with return rate >10%, un-refunded returns, top refund stores, employee hierarchy self join, regional store comparisons via `ANY` and `ALL`, customer category spending via nested subqueries, 2nd highest refunded product per category), Three-Valued Logic `NOT IN` vs `NOT EXISTS` NULL pitfall proof, 100x volume architectural scaling blueprint (indexing, hash joins, partitioning, summary rollups). | [View Scalability & NULL Report](./Day-7/Set3_RetailReturnsAndRefunds/scalability_and_null_report.md) |
+
 
 
 
