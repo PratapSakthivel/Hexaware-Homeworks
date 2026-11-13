@@ -25,6 +25,10 @@ Hexaware-Homeworks/
 │   ├── Set1_RetailInventoryManagement/     # Set 1: Retail Inventory Management
 │   ├── Set2_BankBranchAccounts/            # Set 2: Bank Branch Accounts
 │   └── Set3_HospitalPatientRecords/        # Set 3: Hospital Patient Records
+├── Day-6/                                  # Day 6: Functions, Aggregation, Grouping and Joins (MySQL 8.4)
+│   ├── Set1_RetailSalesReporting/          # Set 1: Retail Sales Reporting
+│   ├── Set2_InsurancePolicyReporting/      # Set 2: Insurance Policy Reporting
+│   └── Set3_TelecomUsageAndBilling/        # Set 3: Telecom Usage and Billing
 └── .gitignore
 ```
 
@@ -76,5 +80,18 @@ All three comprehensive database engineering sets for **Day 5** are housed insid
 | **[Set 1: Retail Inventory Management](./Day-5/Set1_RetailInventoryManagement)** | Retail Inventory (Spreadsheet to 3NF) | 3NF InnoDB schema (`suppliers`, `warehouses`, `products`, `inventory`), PK/FK/CHECK/UNIQUE constraints, ON DELETE RESTRICT / ON UPDATE CASCADE, 4 failing insert demonstrations, UPDATE/DELETE before-after evidence, `information_schema` table profiling. | [View Report](./Day-5/Set1_RetailInventoryManagement/failing_inserts_and_er_report.md) |
 | **[Set 2: Bank Branch Accounts](./Day-5/Set2_BankBranchAccounts)** | Core Banking Accounts | 3NF/BCNF schema (`branches`, `relationship_managers`, `customers`, `accounts`), AUTO_INCREMENT, DECIMAL(15,2) financial justification, DROP vs TRUNCATE vs DELETE comparative analysis on rollback and AUTO_INCREMENT, complex WHERE queries (AND, OR, IN, BETWEEN, LIKE), ALTER TABLE. | [View Report](./Day-5/Set2_BankBranchAccounts/data_types_and_er_report.md) |
 | **[Set 3: Hospital Patient Records](./Day-5/Set3_HospitalPatientRecords)** | Clinical Visits & Healthcare | 3NF decomposition (`departments`, `patients`, `doctors`, `visits`, `billings`), non-negative bill check, default status OPEN, database & table file lifecycle analysis (`.ibd` behavior on rename/drop), monthly visit & department doctor queries, SQL vs NoSQL comparison table. | [View Report](./Day-5/Set3_HospitalPatientRecords/sql_vs_nosql_and_er_report.md) |
+
+---
+
+## Day 6 – Functions, Aggregation, Grouping and Joins – MySQL 8.4 LTS
+
+All three comprehensive reporting and analytical query sets for **Day 6** are housed inside the [`Day-6/`](./Day-6/) folder:
+
+| Module | Business Domain | Key SQL Analytics & Deliverables | Documentation |
+| :--- | :--- | :--- | :---: |
+| **[Set 1: Retail Sales Reporting](./Day-6/Set1_RetailSalesReporting)** | Retail Sales Analytics | 8 queries (top-5 products by revenue, month-wise sales, HAVING > 3 orders, avg basket value by city, orders without payment, inactive customers, category revenue share, peak sales day), string/date/math functions, NULL behavior analysis (`COUNT(*)`, `COUNT(col)`, `SUM`, `AVG`), WHERE vs HAVING. | [View Output & Analysis](./Day-6/Set1_RetailSalesReporting/output_and_analysis_report.md) |
+| **[Set 2: Insurance Policy Reporting](./Day-6/Set2_InsurancePolicyReporting)** | Insurance Policy Administration | 8 queries (policies expiring in 30 days, premium by product, multi-policyholders, claim ratio by product, policies without claims, age-band premium analysis, monthly new policies, top-5 agents), masked policy numbers, loss ratio > 60% with HAVING, INNER/LEFT/CROSS join justifications. | [View Output & Analysis](./Day-6/Set2_InsurancePolicyReporting/output_and_analysis_report.md) |
+| **[Set 3: Telecom Usage and Billing](./Day-6/Set3_TelecomUsageAndBilling)** | Telecom Usage & Revenue Assurance | 8 queries (call minutes by plan, data limit overage detection, month-wise revenue, overdue invoices > 15 days, dormant subscribers, ARPU by circle, plan popularity share, top-10 data consumers), NULL handling via `COALESCE` / `IFNULL`, revenue per plan and circle matrix. | [View Output & Analysis](./Day-6/Set3_TelecomUsageAndBilling/output_and_analysis_report.md) |
+
 
 
