@@ -33,6 +33,10 @@ Hexaware-Homeworks/
 │   ├── Set1_LogisticsShipmentAnalysis/     # Set 1: Logistics Shipment Analysis
 │   ├── Set2_BankLoanPortfolio/             # Set 2: Bank Loan Portfolio
 │   └── Set3_RetailReturnsAndRefunds/       # Set 3: Retail Returns and Refunds
+├── Day-8/                                  # Day 8: CTEs, Window Functions and Transactions (MySQL 8.4)
+│   ├── Set1_BankFundsTransfer/             # Set 1: Bank Funds Transfer
+│   ├── Set2_AirlineSeatBooking/            # Set 2: Airline Seat Booking
+│   └── Set3_RetailInventoryReservation/    # Set 3: Retail Inventory Reservation
 └── .gitignore
 ```
 
@@ -108,6 +112,19 @@ All three comprehensive query optimization and relational analysis sets for **Da
 | **[Set 1: Logistics Shipment Analysis](./Day-7/Set1_LogisticsShipmentAnalysis)** | Global Logistics Network | 10 queries (INNER, LEFT, RIGHT, and Self Joins; `IN`, `EXISTS`, `ANY`, `ALL` subqueries; vehicle fleet comparisons; second-highest shipping cost per hub via nested subquery), Subquery-to-Join query rewrites with execution plan/readability comparisons, Join-choice rationale matrix. | [View Join Choice & Analysis](./Day-7/Set1_LogisticsShipmentAnalysis/join_choice_and_analysis_report.md) |
 | **[Set 2: Bank Loan Portfolio](./Day-7/Set2_BankLoanPortfolio)** | Core Banking & Loan Risk | 10 queries (default risk >3 overdue instalments, multi-branch exposures, borrowers who act as guarantors via self join, dormant branches with no loans, exposure exceeding branch average via correlated subquery, `EXISTS` & `NOT EXISTS` for repayment lapses in 60 days, branches whose peak loan exceeds avg of all branch peak loans), systemic circular risk analysis. | [View Subquery Justification](./Day-7/Set2_BankLoanPortfolio/subquery_justification_report.md) |
 | **[Set 3: Retail Returns and Refunds](./Day-7/Set3_RetailReturnsAndRefunds)** | Omni-Channel Retail Desk | 10 queries (products with return rate >10%, un-refunded returns, top refund stores, employee hierarchy self join, regional store comparisons via `ANY` and `ALL`, customer category spending via nested subqueries, 2nd highest refunded product per category), Three-Valued Logic `NOT IN` vs `NOT EXISTS` NULL pitfall proof, 100x volume architectural scaling blueprint (indexing, hash joins, partitioning, summary rollups). | [View Scalability & NULL Report](./Day-7/Set3_RetailReturnsAndRefunds/scalability_and_null_report.md) |
+
+---
+
+## Day 8 – CTEs, Window Functions and Transactions – MySQL 8.4 LTS
+
+All three comprehensive enterprise transactional and analytical sets for **Day 8** are housed inside the [`Day-8/`](./Day-8/) folder:
+
+| Module | Business Domain | Key SQL Concepts & Deliverables | Documentation |
+| :--- | :--- | :--- | :---: |
+| **[Set 1: Bank Funds Transfer](./Day-8/Set1_BankFundsTransfer)** | Core Banking System | Atomic funds transfer procedure with balance/status checks, deliberate failure & rollback demonstration, `SAVEPOINT` partial rollback (fee waiver), monthly statement CTE using `ROW_NUMBER()` and `LAG()`, autocommit & two-session `READ COMMITTED` vs `REPEATABLE READ` experiment on InnoDB. | [View Isolation Level Note](./Day-8/Set1_BankFundsTransfer/isolation_level_note.md) |
+| **[Set 2: Airline Seat Booking](./Day-8/Set2_AirlineSeatBooking)** | Airline Reservation Desk | High-concurrency seat reservation procedure with `SELECT ... FOR UPDATE`, concurrent 2-session conflict simulation & locking behavior analysis, passenger fare ranking (`RANK()` vs `DENSE_RANK()`), cumulative flight revenue CTE using `SUM() OVER`, correlated subquery for above-average fares. | [View Locking & Ranking Note](./Day-8/Set2_AirlineSeatBooking/locking_and_ranking_note.md) |
+| **[Set 3: Retail Inventory Reservation](./Day-8/Set3_RetailInventoryReservation)** | E-Commerce Fulfillment | Atomic inventory reservation transaction with rollback on insufficient stock, correlated subquery for below-category-average stock, Top-3 products per category CTE via `ROW_NUMBER()`, Month-on-Month (MoM) sales growth via `LEAD()` and `LAG()`, comprehensive ACID explanation with real scenarios & MyISAM non-transactional failure proof. | [View ACID & Reports](./Day-8/Set3_RetailInventoryReservation/acid_explanation_and_reports.md) |
+
 
 
 
