@@ -37,6 +37,18 @@ Hexaware-Homeworks/
 │   ├── Set1_BankFundsTransfer/             # Set 1: Bank Funds Transfer
 │   ├── Set2_AirlineSeatBooking/            # Set 2: Airline Seat Booking
 │   └── Set3_RetailInventoryReservation/    # Set 3: Retail Inventory Reservation
+├── Day-9/                                  # Day 9: Views, Stored Procedures, Functions & Cursors (MySQL 8.4)
+│   ├── Set1_RetailOrderFulfilment/         # Set 1: Retail Order Fulfilment
+│   ├── Set2_InsurancePremiumProcessing/    # Set 2: Insurance Premium Processing
+│   └── Set3_TelecomLowBalanceFollowup/     # Set 3: Telecom Low-Balance Follow-up
+├── Day-10/                                 # Day 10: Triggers (MySQL 8.4)
+│   ├── Set1_RetailPriceChangeAudit/        # Set 1: Retail Price Change Audit
+│   ├── Set2_BankAccountBalanceGuard/       # Set 2: Bank Account Balance Guard
+│   └── Set3_HospitalBedCapacityControl/    # Set 3: Hospital Bed Capacity Control
+├── Day-11/                                 # Day 11: Java (JDK 25 LTS) Control Statements
+│   ├── Set1_LoanEligibilityEngine/         # Set 1: Loan Eligibility Engine
+│   ├── Set2_UtilityBillingCalculator/      # Set 2: Utility Billing Calculator
+│   └── Set3_InsurancePremiumBands/         # Set 3: Insurance Premium Bands
 └── .gitignore
 ```
 
@@ -124,6 +136,43 @@ All three comprehensive enterprise transactional and analytical sets for **Day 8
 | **[Set 1: Bank Funds Transfer](./Day-8/Set1_BankFundsTransfer)** | Core Banking System | Atomic funds transfer procedure with balance/status checks, deliberate failure & rollback demonstration, `SAVEPOINT` partial rollback (fee waiver), monthly statement CTE using `ROW_NUMBER()` and `LAG()`, autocommit & two-session `READ COMMITTED` vs `REPEATABLE READ` experiment on InnoDB. | [View Isolation Level Note](./Day-8/Set1_BankFundsTransfer/isolation_level_note.md) |
 | **[Set 2: Airline Seat Booking](./Day-8/Set2_AirlineSeatBooking)** | Airline Reservation Desk | High-concurrency seat reservation procedure with `SELECT ... FOR UPDATE`, concurrent 2-session conflict simulation & locking behavior analysis, passenger fare ranking (`RANK()` vs `DENSE_RANK()`), cumulative flight revenue CTE using `SUM() OVER`, correlated subquery for above-average fares. | [View Locking & Ranking Note](./Day-8/Set2_AirlineSeatBooking/locking_and_ranking_note.md) |
 | **[Set 3: Retail Inventory Reservation](./Day-8/Set3_RetailInventoryReservation)** | E-Commerce Fulfillment | Atomic inventory reservation transaction with rollback on insufficient stock, correlated subquery for below-category-average stock, Top-3 products per category CTE via `ROW_NUMBER()`, Month-on-Month (MoM) sales growth via `LEAD()` and `LAG()`, comprehensive ACID explanation with real scenarios & MyISAM non-transactional failure proof. | [View ACID & Reports](./Day-8/Set3_RetailInventoryReservation/acid_explanation_and_reports.md) |
+
+---
+
+## Day 9 – Views, Stored Procedures, Functions and Cursors – MySQL 8.4 LTS
+
+All three comprehensive database procedural engineering sets for **Day 9** are housed inside the [`Day-9/`](./Day-9/) folder:
+
+| Module | Business Domain | Key Concepts & Deliverables | Documentation |
+| :--- | :--- | :--- | :---: |
+| **[Set 1: Retail Order Fulfilment](./Day-9/Set1_RetailOrderFulfilment)** | E-Commerce Order Desk | Views (`vw_order_summary`, `vw_low_stock` with `WITH CHECK OPTION`), `sp_place_order` with transaction & rollback handler, `fn_order_total_with_tax`, aged orders cursor with `NOT FOUND` handler vs set-based rewrite, and `SIGNAL SQLSTATE '45000'`. | [View Cursor vs Set-Based Note](./Day-9/Set1_RetailOrderFulfilment/cursor_vs_setbased_comparison.md) |
+| **[Set 2: Insurance Premium Processing](./Day-9/Set2_InsurancePremiumProcessing)** | Insurance Renewals | View `vw_policy_due` (hiding sensitive PII & medical risk codes), `sp_renew_policy` with pending claim validation & `INOUT` processed counter, `fn_premium_with_no_claim_discount`, cursor for overdue policies vs set-based update. | [View Comparison Note](./Day-9/Set2_InsurancePremiumProcessing/comparison_note.md) |
+| **[Set 3: Telecom Low-Balance Follow-up](./Day-9/Set3_TelecomLowBalanceFollowup)** | Prepaid Telecom Systems | Views `vw_prepaid_subscribers` & `vw_recharge_summary`, `sp_recharge` with validation & new balance `OUT` parameter, `fn_validity_days_left`, low-balance notification cursor vs single `INSERT ... SELECT` statement. | [View Timing Comparison](./Day-9/Set3_TelecomLowBalanceFollowup/timing_comparison.md) |
+
+---
+
+## Day 10 – Triggers – MySQL 8.4 LTS
+
+All three comprehensive database trigger sets for **Day 10** are housed inside the [`Day-10/`](./Day-10/) folder:
+
+| Module | Business Domain | Key Trigger Deliverables | Documentation |
+| :--- | :--- | :--- | :---: |
+| **[Set 1: Retail Price Change Audit](./Day-10/Set1_RetailPriceChangeAudit)** | Pricing & Retail Desk | `AFTER UPDATE` trigger writing old/new prices to `price_audit` using `OLD` and `NEW`, `BEFORE UPDATE` trigger blocking prices below cost (`SIGNAL 45000`), multi-row batch testing proving row-level execution, `information_schema.triggers` auditing. | [View Pitfalls Note](./Day-10/Set1_RetailPriceChangeAudit/pitfalls_note.md) |
+| **[Set 2: Bank Account Balance Guard](./Day-10/Set2_BankAccountBalanceGuard)** | Core Banking Safeguards | `AFTER INSERT/UPDATE/DELETE` audit triggers, `BEFORE UPDATE` trigger guarding against negative savings balance, 5-account batch update test proving all-or-nothing rollback, why MySQL lacks `INSTEAD OF` triggers, derived column trigger (`last_txn_date`). | [View Trigger Limitations Note](./Day-10/Set2_BankAccountBalanceGuard/trigger_limitations_note.md) |
+| **[Set 3: Hospital Bed Capacity Control](./Day-10/Set3_HospitalBedCapacityControl)** | Clinical Ward Operations | `BEFORE INSERT` trigger blocking admission when ward is full, `AFTER INSERT/UPDATE/DELETE` triggers logging to `admission_audit`, multi-row batch INSERT testing, CHECK constraints vs triggers vs stored procedures analysis, Java JDBC integration testing. | [View Justification Note](./Day-10/Set3_HospitalBedCapacityControl/justification_note.md) |
+
+---
+
+## Day 11 – Java (JDK 25 LTS) – Introduction and Control Statements
+
+All three comprehensive modern Java control flow sets for **Day 11** are housed inside the [`Day-11/`](./Day-11/) folder:
+
+| Module | Business Domain | Key Java Programming Deliverables | Documentation |
+| :--- | :--- | :--- | :---: |
+| **[Set 1: Loan Eligibility Engine](./Day-11/Set1_LoanEligibilityEngine)** | Retail Loan Pre-Screening | Java records, `var` type inference, 6-rule validation ladder (age, income-to-EMI, loans, score), enhanced `switch` expression with pattern matching, loop processing with `continue`/`break`, formatted `printf` decision table, edge case handling. | [View Decision Matrix](./Day-11/Set1_LoanEligibilityEngine/decision_table_and_output.md) |
+| **[Set 2: Utility Billing Calculator](./Day-11/Set2_UtilityBillingCalculator)** | Electric Utility Billing | 4-tier progressive slab billing, consumer category `switch` expression with fixed charge, late surcharges, online payment rebate, operator precedence analysis, 12-month statement `for` loop, `do-while` loop, primitive casting & overflow pitfalls. | [View Boundary Tests](./Day-11/Set2_UtilityBillingCalculator/sample_runs_and_boundary_tests.md) |
+| **[Set 3: Insurance Premium Bands](./Day-11/Set3_InsurancePremiumBands)** | Underwriting Classification | BMI nested `if` classification, enhanced `switch` with pattern matching & guards (`when`), operator precedence documentation, 8-applicant enhanced `for` loop with labeled `break`, comprehensive JVM Stack vs Heap & Garbage Collection explanation. | [View Memory Model Report](./Day-11/Set3_InsurancePremiumBands/memory_model_and_output.md) |
+
 
 
 
