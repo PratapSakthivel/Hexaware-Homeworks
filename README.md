@@ -16,7 +16,7 @@ Hexaware-Homeworks/
 │   ├── Set1_RetailOrderDesk/               # Set 1: Online Retail Order Desk DSA
 │   ├── Set2_RetailBankingTransactionReview/ # Set 2: Retail Banking Transaction Review
 │   └── Set3_HospitalAppointmentDesk/       # Set 3: Hospital Appointment Desk
-├── Day_02/                                 # Day 2: Insurance Claims Processing DSA
+├── Day-2/                                  # Day 2: Insurance Claims Processing DSA
 ├── Day-3/                                  # Day 3: Agile and Scrum Foundations & Backlog Workshop
 │   ├── Set1_OnlineGroceryDelivery/         # Set 1: Online Grocery Delivery App
 │   ├── Set2_InsuranceClaimsPortal/         # Set 2: Insurance Claims Portal
@@ -49,6 +49,22 @@ Hexaware-Homeworks/
 │   ├── Set1_LoanEligibilityEngine/         # Set 1: Loan Eligibility Engine
 │   ├── Set2_UtilityBillingCalculator/      # Set 2: Utility Billing Calculator
 │   └── Set3_InsurancePremiumBands/         # Set 3: Insurance Premium Bands
+├── Day-12/                                 # Day 12: Arrays, Enums and OOP in Java
+│   ├── Set1_InsurancePolicyHierarchy/      # Set 1: Insurance Policy Hierarchy
+│   ├── Set2_VehicleRentalSystem/           # Set 2: Vehicle Rental System
+│   └── Set3_HospitalBillingModel/          # Set 3: Hospital Billing Model
+├── Day-13/                                 # Day 13: Interfaces, Static/Final, String API & Object Class
+│   ├── Set1_CustomerMasterDeduplication/   # Set 1: Customer Master De-duplication
+│   ├── Set2_InvoiceTextFormatter/          # Set 2: Invoice Text Formatter
+│   └── Set3_AttendanceReportGenerator/     # Set 3: Attendance Report Generator
+├── Day-14/                                 # Day 14: Collections Framework and Generics
+│   ├── Set1_SupportTicketQueue/            # Set 1: Support Ticket Queue
+│   ├── Set2_RetailInventoryManager/        # Set 2: Retail Inventory Manager
+│   └── Set3_CourseWaitlist/                # Set 3: Course Waitlist
+├── Day-15/                                 # Day 15: Java 8 Features (Lambda, Optional, java.time)
+│   ├── Set1_OrderValidationRules/          # Set 1: Order Validation Rules
+│   ├── Set2_FeeDiscountEngine/             # Set 2: Fee and Discount Engine
+│   └── Set3_InvoiceDueDateCalculator/      # Set 3: Invoice Due-Date Calculator
 └── .gitignore
 ```
 
@@ -70,11 +86,11 @@ Each set contains complete standalone Java source code, high-volume datasets, fu
 
 ## Day 2 – Insurance Claims Processing (Java)
 
-The Day 2 assignment is located in the [`Day_02/`](./Day_02/) folder:
+The Day 2 assignment is located in the [`Day-2/`](./Day-2/) folder:
 
 | Module | Business Domain | Key Algorithmic Concepts Implemented | Documentation |
 | :--- | :--- | :--- | :---: |
-| **[Day 2: Insurance Claims Processing](./Day_02)** | Insurance Claims | 1. Claim ID Binary Search Tree (BST) with in-order/pre-order/post-order traversals.<br>2. Hashing for duplicate claim detection (normalized policy + incident date).<br>3. Approval-stage Graph (BFS shortest path & DFS cycle detection).<br>4. Sliding Window (Consecutive days strictly above 100 claims).<br>5. Two Pointers (Merging sorted regional claim lists in $O(n+m)$). | [View Readme](./Day_02/README.md) & [Complexity Table](./Day_02/complexity_table.txt) |
+| **[Day 2: Insurance Claims Processing](./Day-2)** | Insurance Claims | 1. Claim ID Binary Search Tree (BST) with in-order/pre-order/post-order traversals.<br>2. Hashing for duplicate claim detection (normalized policy + incident date).<br>3. Approval-stage Graph (BFS shortest path & DFS cycle detection).<br>4. Sliding Window (Consecutive days strictly above 100 claims).<br>5. Two Pointers (Merging sorted regional claim lists in $O(n+m)$). | [View Readme](./Day-2/README.md) & [Complexity Table](./Day-2/complexity_table.txt) |
 
 ---
 
@@ -172,6 +188,55 @@ All three comprehensive modern Java control flow sets for **Day 11** are housed 
 | **[Set 1: Loan Eligibility Engine](./Day-11/Set1_LoanEligibilityEngine)** | Retail Loan Pre-Screening | Java records, `var` type inference, 6-rule validation ladder (age, income-to-EMI, loans, score), enhanced `switch` expression with pattern matching, loop processing with `continue`/`break`, formatted `printf` decision table, edge case handling. | [View Decision Matrix](./Day-11/Set1_LoanEligibilityEngine/decision_table_and_output.md) |
 | **[Set 2: Utility Billing Calculator](./Day-11/Set2_UtilityBillingCalculator)** | Electric Utility Billing | 4-tier progressive slab billing, consumer category `switch` expression with fixed charge, late surcharges, online payment rebate, operator precedence analysis, 12-month statement `for` loop, `do-while` loop, primitive casting & overflow pitfalls. | [View Boundary Tests](./Day-11/Set2_UtilityBillingCalculator/sample_runs_and_boundary_tests.md) |
 | **[Set 3: Insurance Premium Bands](./Day-11/Set3_InsurancePremiumBands)** | Underwriting Classification | BMI nested `if` classification, enhanced `switch` with pattern matching & guards (`when`), operator precedence documentation, 8-applicant enhanced `for` loop with labeled `break`, comprehensive JVM Stack vs Heap & Garbage Collection explanation. | [View Memory Model Report](./Day-11/Set3_InsurancePremiumBands/memory_model_and_output.md) |
+
+---
+
+## Day 12 – Arrays, Enums and Object-Oriented Programming
+
+All three comprehensive object-oriented system sets for **Day 12** are housed inside the [`Day-12/`](./Day-12/) folder:
+
+| Module | Business Domain | Key Java OOP Concepts & Deliverables | Documentation |
+| :--- | :--- | :--- | :---: |
+| **[Set 1: Insurance Policy Hierarchy](./Day-12/Set1_InsurancePolicyHierarchy)** | Multi-Line Insurance Desk | `PolicyStatus` enum, abstract `Policy` class, `MotorPolicy`, `HealthPolicy`, `TravelPolicy`, `HomePolicy` (OCP extension), polymorphic array calculation, 2D and jagged array regional premium collections. | [View Class Diagram & OCP](./Day-12/Set1_InsurancePolicyHierarchy/class_diagram_and_output.md) |
+| **[Set 2: Vehicle Rental System](./Day-12/Set2_VehicleRentalSystem)** | Fleet Rental Management | `VehicleType` enum, abstract `Vehicle`, `Car`, `Bike`, `Van`, `Insurable` interface, `Rental` composition (HAS-A Vehicle and Customer), Single Responsibility Principle refactoring of God class. | [View Composition vs Inheritance](./Day-12/Set2_VehicleRentalSystem/composition_vs_inheritance.md) |
+| **[Set 3: Hospital Billing Model](./Day-12/Set3_HospitalBillingModel)** | Patient Clinic Billing | `VisitType` enum, abstract `Visit`, `OutPatientVisit`, `InPatientVisit`, `EmergencyVisit`, immutable visit IDs, Doctor/Patient composition, method overloading (copay), 2D department revenue array. | [View Inheritance Pitfall](./Day-12/Set3_HospitalBillingModel/inheritance_pitfall_and_diagram.md) |
+
+---
+
+## Day 13 – Interfaces, Static and Final, String API and Object Class
+
+All three core language and String API sets for **Day 13** are housed inside the [`Day-13/`](./Day-13/) folder:
+
+| Module | Business Domain | Key Core Java Concepts & Deliverables | Documentation |
+| :--- | :--- | :--- | :---: |
+| **[Set 1: Customer Master De-duplication](./Day-13/Set1_CustomerMasterDeduplication)** | CRM Master Data Management | Handwritten `equals`, `hashCode`, and `toString` on normalized email, `HashSet` deduplication, `CustomerRecord` value object comparison, String Constant Pool `==` vs `equals()`, marker vs functional interfaces. | [View Equals/HashCode Contract](./Day-13/Set1_CustomerMasterDeduplication/equals_hashcode_contract_note.md) |
+| **[Set 2: Invoice Text Formatter](./Day-13/Set2_InvoiceTextFormatter)** | Finance Invoice Engine | 1,000 line item benchmark (`+` vs `StringBuilder` vs `StringBuffer`), Text Block templates, `String.format` tabular columns, `static`/`final` semantic rules, `instanceof` with pattern matching. | [View Timing & Sample Invoice](./Day-13/Set2_InvoiceTextFormatter/timing_table_and_sample_invoice.md) |
+| **[Set 3: Attendance Report Generator](./Day-13/Set3_AttendanceReportGenerator)** | Training Academy Attendance | `Learner` & `Course` HashMap keys, pipe-delimited log parsing (`split`), malformed record handling, immutable `AttendanceRecord`, String API (`format`, `repeat`, `strip`, `join`), string immutability note. | [View Immutability Note](./Day-13/Set3_AttendanceReportGenerator/string_immutability_note.md) |
+
+---
+
+## Day 14 – Collections Framework and Generics
+
+All three advanced collections and generics sets for **Day 14** are housed inside the [`Day-14/`](./Day-14/) folder:
+
+| Module | Business Domain | Key Collections Concepts & Deliverables | Documentation |
+| :--- | :--- | :--- | :---: |
+| **[Set 1: Support Ticket Queue](./Day-14/Set1_SupportTicketQueue)** | Service Desk Work Queue | `LinkedHashSet` duplicate removal keeping earliest, multi-tier `Comparator` (priority DESC, creation time, ticket no), `PriorityQueue` processing, `HashMap` vs `TreeMap` iteration orders, safe `Iterator.remove()`. | [View Iterator & CME Note](./Day-14/Set1_SupportTicketQueue/output_and_iterator_note.md) |
+| **[Set 2: Retail Inventory Manager](./Day-14/Set2_RetailInventoryManager)** | Warehouse Stock Inventory | `HashMap` SKU lookups, `Comparable` natural sorting (category ASC, stock DESC), `ArrayDeque` recent activity log, generic `Repository<T>`, autoboxing & Integer cache `[-128, 127]` trap. | [View Collection Rationale](./Day-14/Set2_RetailInventoryManager/collection_rationale_note.md) |
+| **[Set 3: Course Waitlist](./Day-14/Set3_CourseWaitlist)** | Academic Course Scheduling | `PriorityQueue` waitlist promoting seniority & timestamp, `HashSet` registration deduplication, wildcard capacity summation (`List<? extends Course>`), 4 `Collections` & `Arrays` utility methods. | [View Waitlist Documentation](./Day-14/Set3_CourseWaitlist/README.md) |
+
+---
+
+## Day 15 – Java 8 Features – Lambda, Functional Interfaces, Optional and Date-Time
+
+All three modern Java 8 functional programming sets for **Day 15** are housed inside the [`Day-15/`](./Day-15/) folder:
+
+| Module | Business Domain | Key Java 8 Functional Concepts & Deliverables | Documentation |
+| :--- | :--- | :--- | :---: |
+| **[Set 1: Order Validation Rules](./Day-15/Set1_OrderValidationRules)** | E-Commerce Order Pipeline | 5 `Predicate<Order>` objects combined via `and`, `or`, and `negate`, `Stream.filter`, `Function`/`BiFunction`/`UnaryOperator` pricing pipelines, modern `Optional` null-safety (`map`, `orElse`). | [View Null Handling Note](./Day-15/Set1_OrderValidationRules/null_handling_before_after.md) |
+| **[Set 2: Fee and Discount Engine](./Day-15/Set2_FeeDiscountEngine)** | Academic Billing Pipeline | Custom `@FunctionalInterface DiscountRule` with default method, chaining via `andThen` and `compose`, 4 kinds of method references (static, bound, unbound, ctor), correcting `Optional` anti-patterns. | [View Refactoring Note](./Day-15/Set2_FeeDiscountEngine/refactoring_comparison.md) |
+| **[Set 3: Invoice Due-Date Calculator](./Day-15/Set3_InvoiceDueDateCalculator)** | Global Multi-Zone Billing | `LocalDate`, `Period`, and `ChronoUnit` net-30 day calculations, multi-timezone conversions (`ZonedDateTime` across UTC, Asia/Kolkata, America/New_York), working-day calculator skipping holidays. | [View Timezone Cases](./Day-15/Set3_InvoiceDueDateCalculator/timezone_and_boundary_cases.md) |
+
 
 
 
